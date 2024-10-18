@@ -36,6 +36,12 @@ dropoutdb = mongo.db.dropout
 # Flask Routes
 #################################################
 
+@app.route("/")
+def home_page():
+    return(
+        f"Welcome to Drop Out Detectives"
+    )
+
 @app.route("/alldropouts/", methods=["GET"])
 @cross_origin()
 def alldropoutdata():
@@ -48,15 +54,7 @@ def alldropoutdata():
 @cross_origin()
 def failures():
 
-    number_failures = list(dropoutdb.aggregate([
-        {"$group": {
-            "Number_of_Failures"
-        }},
-        {"$group": {
-            "Dropped_Out"
-        }},
-    ]))
-
+    number_failures = dropoutdb.find({}, {'_id': 0, 'Number_of_Failures': 1, 'Dropped_Out': 1})
     failuresjson = json.loads(json_util.dumps(number_failures))
     return jsonify(failuresjson)
 
@@ -64,84 +62,33 @@ def failures():
 @cross_origin()
 def alcohol():
 
-    alcohol = list(dropoutdb.aggregate([
-        {"$group": {
-            "Weekend_Alcohol_Consumption"
-        }},
-        {"$group": {
-            "Going_Out"
-        }},
-        {"$group": {
-            "Dropped_Out"
-        }},
-    ]))
-
+    alcohol = dropoutdb.find({}, {"Weekend_Alcohol_Consumption": 1, "Going_Out": 1, "Dropped_Out": 1})
     alcoholjson = json.loads(json_util.dumps(alcohol))
     return jsonify(alcoholjson)
 
 @app.route("/parental_status/", methods=["GET"])
 @cross_origin()
-def alcohol():
+def parental():
 
-    parental_status = list(dropoutdb.aggregate([
-        {"$group": {
-            "Parental_Status"
-        }},
-        {"$group": {
-            "Dropped_Out"
-        }},
-    ]))
-
+    parental_status = dropoutdb.find({}, {"Parental_Status": 1, "Dropped_Out": 1})
     parentaljson = json.loads(json_util.dumps(parental_status))
     return jsonify(parentaljson)
 
 @app.route("/internet_access/", methods=["GET"])
 @cross_origin()
-def alcohol():
+def internet():
 
-    internet_status = list(dropoutdb.aggregate([
-        {"$group": {
-            "Internet_Access"
-        }},
-        {"$group": {
-            'Extra_Paid_Class'
-        }},
-        {"$group": {
-            'Extra_Curricular_Activities'
-        }},
-        {"$group": {
-            'Final_Grade'
-        }},
-        {"$group": {
-            "Dropped_Out"
-        }},
-    ]))
-
+    internet_status = dropoutdb.find({}, {"Internet_Access": 1, 'Extra_Paid_Class': 1,
+                                           'Extra_Curricular_Activities': 1, 'Final_Grade': 1, "Dropped_Out": 1})
     internetjson = json.loads(json_util.dumps(internet_status))
     return jsonify(internetjson)
 
 @app.route("/parents_job/", methods=["GET"])
 @cross_origin()
-def alcohol():
+def parents():
 
-    parents_job = list(dropoutdb.aggregate([
-        {"$group": {
-            "Age"
-        }},
-        {"$group": {
-            'Mother_Job'
-        }},
-        {"$group": {
-            'Father_Job'
-        }},
-        {"$group": {
-            'Family_Support'
-        }},
-        {"$group": {
-            "Dropped_Out"
-        }},
-    ]))
-
+    parents_job = dropoutdb.find({}, {"Age": 1, 'Mother_Job': 1, 'Father_Job': 1, 
+                                      'Family_Support': 1, "Dropped_Out": 1})
     parents_job_json = json.loads(json_util.dumps(parents_job))
     return jsonify([parents_job_json])
 
