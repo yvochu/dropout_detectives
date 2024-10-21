@@ -30,7 +30,7 @@ mongo = PyMongo(app)
 
 dropout_project = mongo.db
 
-dropoutdb = mongo.db.dropout
+dropoutdb = mongo.db.dropouts
 
 #################################################
 # Flask Routes
