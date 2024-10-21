@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dropout Analysis</title>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .chart-container { width: 500px; height: 400px; margin: 20px auto; }
+        select { margin: 10px; }
+        #error-message { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Student Dropout Analysis</h1>
+    <div>
+        <select id="chartType">
+            <option value="parentalStatus">Parental Status</option>
+            <option value="dropoutStatus">Dropout Status</option>
+        </select>
+    </div>
+    <div class="chart-container" id="chart"></div>
+    <div id="error-message"></div>
+ 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof d3 === 'undefined') {
+                showError('D3 library not loaded. Please check your internet connection and try again.');
+                return;
+            }
+ 
+            const csvFilePath = 'C:/Users/jasmi/OneDrive/Documents/Project_3/Resources/student dropout.csv';
+ 
+            // Fallback data in case CSV loading fails
+            const fallbackData = {
+                parentalStatus: { 'A': 80, 'T': 569 },
+                dropoutStatus: { 'True': 100, 'False': 549 }
+            };
+ 
+            function showError(message) {
+                document.getElementById('error-message').textContent = message;
+            }
+ 
+            function createPieChart(data, container) {
+                d3.select(container).selectAll("*").remove();
+ 
+                const width = 500;
+                const height = 400;
+                const radius = Math.min(width, height) / 2;
+ 
+                const svg = d3.select(container)
+                    .append("svg")
+                    .attr("width", width)
+                    .attr("height", height)
+                    .append("g")
+                    .attr("transform", `translate(${width / 2},${height / 2})`);
+ 
+                const color = d3.scaleOrdinal(d3.schemeCategory10);
+ 
+                const pie = d3.pie()
+                    .value(d => d[1]);
+ 
+                const arc = d3.arc()
+                    .innerRadius(0)
+                    .outerRadius(radius);
+ 
+                const arcs = svg.selectAll("arc")
+                    .data(pie(Object.entries(data)))
+                    .enter()
+                    .append("g");
+ 
+                arcs.append("path")
+                    .attr("d", arc)
+                    .attr("fill", (d, i) => color(i));
+ 
+                arcs.append("text")
+                    .attr("transform", d => `translate(${arc.centroid(d)})`)
+                    .text(d => `${d.data[0]}: ${((d.data[1] / d3.sum(Object.values(data))) * 100).toFixed(1)}%`)
+                    .style("text-anchor", "middle")
+                    .style("font-size", "12px");
+            }
+ 
+            function updateChart(data) {
+                const chartType = document.getElementById("chartType").value;
+                if (chartType === "parentalStatus") {
+                    createPieChart(data.parentalStatus, "#chart");
+                } else {
+                    createPieChart(data.dropoutStatus, "#chart");
+                }
+            }
+ 
+            // Try to load CSV, fall back to hardcoded data if it fails
+            d3.csv(csvFilePath).then(function(csvData) {
+                const processedData = {
+                    parentalStatus: { 'A': 0, 'T': 0 },
+                    dropoutStatus: { 'True': 0, 'False': 0 }
+                };
+ 
+                csvData.forEach(d => {
+                    processedData.parentalStatus[d.Parental_Status]++;
+                    processedData.dropoutStatus[d.Dropped_Out]++;
+                });
+ 
+                document.getElementById("chartType").addEventListener("change", () => updateChart(processedData));
+                updateChart(processedData);
+            }).catch(function(error) {
+                console.error('Error loading the CSV file:', error);
+                showError(`Failed to load CSV from ${csvFilePath}. Using fallback data. Error: ${error.message}`);
+                document.getElementById("chartType").addEventListener("change", () => updateChart(fallbackData));
+                updateChart(fallbackData);
+            });
+        });
+    </script>
+</body>
+</html>
