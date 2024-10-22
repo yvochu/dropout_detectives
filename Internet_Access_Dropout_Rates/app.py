@@ -54,7 +54,7 @@ def alldropoutdata():
 @cross_origin()
 def failures():
 
-    number_failures = dropoutdb.find({}, {'_id': 0, 'Number_of_Failures': 1, 'Dropped_Out': 1})
+    number_failures = dropoutdb.find({}, {'_id': 0, 'Number_of_Failures': 1, 'Final_Grade': 1, 'Dropped_Out': 1})
     failuresjson = json.loads(json_util.dumps(number_failures))
     return jsonify(failuresjson)
 
