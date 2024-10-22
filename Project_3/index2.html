@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dropout Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .chart-container { width: 500px; height: 400px; margin: 20px auto; }
+        select { margin: 10px; }
+        #error-message { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Student Dropout Analysis</h1>
+    <div>
+        <select id="chartType">
+            <option value="parentalStatus">Parental Status</option>
+            <option value="dropoutStatus">Dropout Status</option>
+        </select>
+    </div>
+    <div class="chart-container">
+        <canvas id="myChart"></canvas>
+    </div>
+    <div id="error-message"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const csvFilePath = 'C:/Users/jasmi/OneDrive/Documents/Project_3/Resources/student dropout.csv';
+
+            // Fallback data in case CSV loading fails
+            const fallbackData = {
+                parentalStatus: { 'A': 80, 'T': 569 },
+                dropoutStatus: { 'True': 100, 'False': 549 }
+            };
+
+            function showError(message) {
+                document.getElementById('error-message').textContent = message;
+            }
+
+            const ctx = document.getElementById('myChart').getContext('2d');
+            let myChart;
+
+            function createPieChart(data) {
+                const labels = Object.keys(data);
+                const values = Object.values(data);
+
+                if (myChart) {
+                    myChart.destroy(); // Destroy previous chart instance
+                }
+
+                myChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: values,
+                            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'],
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: (tooltipItem) => {
+                                        const label = tooltipItem.label || '';
+                                        const value = tooltipItem.raw;
+                                        const total = values.reduce((a, b) => a + b, 0);
+                                        const percentage = ((value / total) * 100).toFixed(1);
+                                        return `${label}: ${value} (${percentage}%)`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function updateChart(data) {
+                const chartType = document.getElementById("chartType").value;
+                if (chartType === "parentalStatus") {
+                    createPieChart(data.parentalStatus);
+                } else {
+                    createPieChart(data.dropoutStatus);
+                }
+            }
+
+            // Try to load CSV, fall back to hardcoded data if it fails
+            fetch(csvFilePath)
+                .then(response => response.text())
+                .then(csvData => {
+                    const processedData = {
+                        parentalStatus: { 'A': 0, 'T': 0 },
+                        dropoutStatus: { 'True': 0, 'False': 0 }
+                    };
+
+                    const rows = csvData.split('\n').slice(1); // Skip header
+                    rows.forEach(row => {
+                        const [parentalStatus, dropoutStatus] = row.split(',');
+                        processedData.parentalStatus[parentalStatus]++;
+                        processedData.dropoutStatus[dropoutStatus]++;
+                    });
+
+                    document.getElementById("chartType").addEventListener("change", () => updateChart(processedData));
+                    updateChart(processedData);
+                })
+                .catch(function(error) {
+                    console.error('Error loading the CSV file:', error);
+                    showError(`Failed to load CSV from ${csvFilePath}. Using fallback data. Error: ${error.message}`);
+                    document.getElementById("chartType").addEventListener("change", () => updateChart(fallbackData));
+                    updateChart(fallbackData);
+                });
+        });
+    </script>
+</body>
+</html>
