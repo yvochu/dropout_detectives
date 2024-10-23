@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Failures and Final Grade Box Plot</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@sgratzl/chartjs-chart-boxplot"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <h1> Welcome the Dropout Detectives Dashboard</h1>
+        </div>
+        <div class="row">
+            <canvas id="failuresGradeChart" width="400" height="200"></canvas>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Mother's Profession</h3>
+                <div id="mother_job_bar"></div>
+            </div>
+            <div class="col-md-6">
+                <h3>Father's Profession</h3>
+                <div id="father_job_bar"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="text/javascript" src="logic.js"></script>
+</body>
+
+</html>
