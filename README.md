@@ -1,5 +1,5 @@
 # dropout_detectives
-This project aims to develop an interactive data visualization that explores student dropout trends by analyzing key factors such as number of failures, total grades, parental status, parent occupations, and other relevant variables.
+This project aims to develop an interactive data visualizations that explores student dropout trends by analyzing key factors such as number of failures, total grades, parental status, parent occupations, and other relevant variables.
 
 We wanted to use our data to answer the following questions:
     
