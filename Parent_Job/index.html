@@ -7,19 +7,25 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <title>MotherJobChart</title>
+    <title>Parent Job Chart</title>
+    <style>
+        #MotherJobChart, #FatherJobChart {
+            width: 600px;
+            height: 400px;
+        }
+    </style>
 </head>
 <body>
-    <!-- <label for="OccupationFilter">Select Occupation:</label>
-    <select id="OccupationFilter" onchange="createChart()">
-        <option value="all">All</option>
-        <option value="health">Health</option>
-        <option value="at_home">At Home</option>
-        <option value="services">Services</option>
-        <option value="teacher">Teacher</option>
-        <option value="other">Other</option> -->
-    <div id="MotherJobChart" width="600" height="400"></div>
-    <div id="FatherJobChart" width="600" height="400"></div>
+    <label for="familySupport">Family Support:</label>
+<select id="familySupport">
+    <option value="all">All</option>
+    <option value="yes">Yes</option>
+    <option value="no">No</option>
+</select>
+<button id="filterButton">Apply Filter</button>
+ 
+    <div id="MotherJobChart"></div>
+    <div id="FatherJobChart"></div>
     <script src="logic.js"></script>
 </body>
 </html>

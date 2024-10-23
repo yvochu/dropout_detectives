@@ -1,5 +1,7 @@
+document.addEventListener('DOMContentLoaded', createChart);
+
 function createChart() {
-    fetch("http://127.0.0.1:5000/mother_job/")  // Ensure the correct API endpoint
+    fetch("http://127.0.0.1:5000/parent_jobs/")  // Ensure the correct API endpoint
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok ' + response.statusText);
@@ -8,32 +10,69 @@ function createChart() {
         })
         .then(data => {
             console.log(data);  // Log the data for verification
-            // Plot Mother Job Chart
+            
+            document.getElementById('filterButton').addEventListener('click', function() {
+                let selectedValue = document.getElementById('familySupport').value;
+                let filteredData;
+                if (selectedValue === 'yes') {
+                    filteredData = data.filter(item => item.family_support === true);
+                } else if (selectedValue === 'no') {
+                    filteredData = data.filter(item => item.family_support === false);
+                } else {
+                    filteredData = data; 
+                }
+            });
             let traceMother = {
                 x: data.mother_job_counts.map(item => item._id),
-                y: data.mother_job_counts.map(item => item.Count),
+                y: data.mother_job_counts.map(item => item.count),
                 type: 'bar',
-                name: "Mother's Job"
+                name: "Mother's Job",
+                marker: {
+                    color: 'rgba(255, 99, 132, 0.6)',
+                    line: {
+                        color: 'red', 
+                        width: 1 
+                    }
+                }
             };
             // Plot Father Job Chart
             let traceFather = {
                 x: data.father_job_counts.map(item => item._id),
                 y: data.father_job_counts.map(item => item.count),
                 type: 'bar',
-                name: "Father's Job"
+                name: "Father's Job",
+                marker: {
+                    color: 'rgba(144, 238, 144, 0.6)',
+                    line: {
+                        color: 'green', 
+                        width: 1 
+                    }
+                }
             };
             // Data arrays for each chart
             let dataMother = [traceMother];
             let dataFather = [traceFather];
             // Layout for Mother Job Chart
             let layoutMother = {
-                title: 'Mother Job Dropout Counts',
-                margin: {l: 100, r: 100, t: 100, b: 100}
+                title: "Mother's Job vs Dropout Counts",
+                margin: {l: 100, r: 100, t: 100, b: 100},
+                xaxis: {
+                    title: 'Occupation Type'
+                },
+                yaxis: {
+                    title: 'Dropout Counts'
+                }
             };
             // Layout for Father Job Chart
             let layoutFather = {
-                title: 'Father Job Dropout Counts',
-                margin: {l: 100, r: 100, t: 100, b: 100}
+                title: "Father's Job vs Dropout Counts",
+                margin: {l: 100, r: 100, t: 100, b: 100},
+                xaxis: {
+                    title: 'Occupation Type'
+                },
+                yaxis: {
+                    title: 'Dropout Counts'
+                }
             };
             // Render the Mother Job Chart
             Plotly.newPlot('MotherJobChart', dataMother, layoutMother);
