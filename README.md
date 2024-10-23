@@ -27,22 +27,22 @@ Analysis
 
   Boxplot: The purpose of this analysis is to determine if students with more previous class failures are more likely to have lower final grades.
   
-  Key Takeaways
-    Students with no previous failures have a higher median final grade compared to those with 1, 2, or 3 failures. This suggests that more failures are associated with lower academic performance.
-    As the number of failures increases, the median grade decreases, indicating that previous academic failures could negatively impact future academic performance.
-    The distribution for students with failures (especially 1 or 2) shows lower outliers, suggesting that some students with prior failures perform significantly worse in their final grades.
+    Key Takeaways:
+        Students with no previous failures have a higher median final grade compared to those with 1, 2, or 3 failures. This suggests that more failures are associated with lower academic performance.
+        As the number of failures increases, the median grade decreases, indicating that previous academic failures could negatively impact future academic performance.
+        The distribution for students with failures (especially 1 or 2) shows lower outliers, suggesting that some students with prior failures perform significantly worse in their final grades.
   
   Mother and Father Chart: The purpose of this comparison was to uncover the relationship between each parent’s job and whether their child dropped out.
- 
-  Key Takeaways
-    The other occupation categorization resulted in the most dropouts for Mothers and Fathers.
-      Mothers other dropouts = 42
-      Fathers other dropouts = 54
-    There was a significant difference in the at home occupation and resulting dropouts for Mothers and Fathers
-      Mothers at home dropouts = 29
-      Fathers at home dropouts = 7
-    Teachers were the most successful at preventing their children from dropping out for Mothers and Fathers.
-      They each only resulted in 3 dropouts.
+     
+     Key Takeaways:
+        The other occupation categorization resulted in the most dropouts for Mothers and Fathers.
+          Mothers other dropouts = 42
+          Fathers other dropouts = 54
+        There was a significant difference in the at home occupation and resulting dropouts for Mothers and Fathers
+          Mothers at home dropouts = 29
+          Fathers at home dropouts = 7
+        Teachers were the most successful at preventing their children from dropping out for Mothers and Fathers.
+          They each only resulted in 3 dropouts.
   
   Parental Status Pie and Bar charts: The analysis of comprehensive factors on student dropout rates in secondary education. Parental status refers to the living arrangements of the parents; A for living together and T for living apart.
     
