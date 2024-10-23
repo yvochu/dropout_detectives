@@ -9,7 +9,7 @@ We wanted to use our data to answer the following questions:
 
 How to Interact
     
-    1 The user must first run the app.py in order to load the data from the pymongo database called dropout_project.  The collection of dropouts will load 649 sets of data.
+    1 The user must first run the app.py in the Internet_Access_Dropout_Rates folder in order to load the data from the pymongo database called dropout_project.  The collection of dropouts will load 649 sets of data.
     
     2 The logic.js will be ran in order to load chart formats and customizations
     
