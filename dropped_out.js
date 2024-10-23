@@ -3,51 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alcohol Consumption Visualization</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Box Plots from Flask API</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
-    <h1>Alcohol Consumption Data</h1>
-    <canvas id="alcoholChart" width="400" height="200"></canvas>
+    <h1>Box Plots for Student Data</h1>
+    <div id="box-plot-alcohol" style="width: 100%; height: 400px;"></div>
+    <div id="box-plot-going-out" style="width: 100%; height: 400px;"></div>
+
     <script>
-        async function fetchData() {
-            const response = await fetch('/alcohol/');
-            const data = await response.json();
+        // Fetch data from the Flask API
+        fetch("http://localhost:5000/alcohol/")
+            .then(response => response.json())
+            .then(data => {
+                // Prepare data for Weekend Alcohol Consumption Box Plot
+                const alcoholDataYes = data.filter(d => d.Dropped_Out === "Yes").map(d => d.Weekend_Alcohol_Consumption);
+                const alcoholDataNo = data.filter(d => d.Dropped_Out === "No").map(d => d.Weekend_Alcohol_Consumption);
 
-            const weekendConsumption = data.data.map(item => item.Weekend_Alcohol_Consumption);
-            const goingOut = data.data.map(item => item.Going_Out);
-            const labels = data.data.map((_, index) => `Entry ${index + 1}`);
+                const alcoholTraceYes = {
+                    type: 'box',
+                    name: 'Dropped Out: Yes',
+                    boxpoints: 'all',
+                    y: alcoholDataYes,
+                    marker: { color: 'red' }
+                };
 
-            const ctx = document.getElementById('alcoholChart').getContext('2d');
-            const alcoholChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: 'Weekend Alcohol Consumption',
-                            data: weekendConsumption,
-                            backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                        },
-                        {
-                            label: 'Going Out',
-                            data: goingOut,
-                            backgroundColor: 'rgba(153, 102, 255, 0.6)',
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        }
+                const alcoholTraceNo = {
+                    type: 'box',
+                    name: 'Dropped Out: No',
+                    boxpoints: 'all',
+                    y: alcoholDataNo,
+                    marker: { color: 'blue' }
+                };
 
-        fetchData();
+                const alcoholLayout = {
+                    title: 'Weekend Alcohol Consumption by Dropout Status',
+                    yaxis: { title: 'Weekend Alcohol Consumption' },
+                    boxmode: 'group'
+                };
+
+                Plotly.newPlot('box-plot-alcohol', [alcoholTraceYes, alcoholTraceNo], alcoholLayout);
+
+                // Prepare data for Going Out Frequency Box Plot
+                const goingOutDataYes = data.filter(d => d.Dropped_Out === "Yes").map(d => d.Going_Out);
+                const goingOutDataNo = data.filter(d => d.Dropped_Out === "No").map(d => d.Going_Out);
+
+                const goingOutTraceYes = {
+                    type: 'box',
+                    name: 'Dropped Out: Yes',
+                    boxpoints: 'all',
+                    y: goingOutDataYes,
+                    marker: { color: 'red' }
+                };
+
+                const goingOutTraceNo = {
+                    type: 'box',
+                    name: 'Dropped Out: No',
+                    boxpoints: 'all',
+                    y: goingOutDataNo,
+                    marker: { color: 'blue' }
+                };
+
+                const goingOutLayout = {
+                    title: 'Going Out Frequency by Dropout Status',
+                    yaxis: { title: 'Going Out Frequency' },
+                    boxmode: 'group'
+                };
+
+                Plotly.newPlot('box-plot-going-out', [goingOutTraceYes, goingOutTraceNo], goingOutLayout);
+            })
+            .catch(error => console.error('Error fetching data:', error));
     </script>
 </body>
 </html>
