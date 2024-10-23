@@ -83,14 +83,35 @@ def internet():
     internetjson = json.loads(json_util.dumps(internet_status))
     return jsonify(internetjson)
 
-@app.route("/parents_job/", methods=["GET"])
+@app.route("/parent_jobs/", methods=["GET"])
 @cross_origin()
-def parents():
-
-    parents_job = dropoutdb.find({}, {"Age": 1, 'Mother_Job': 1, 'Father_Job': 1, 
-                                      'Family_Support': 1, "Dropped_Out": 1})
-    parents_job_json = json.loads(json_util.dumps(parents_job))
-    return jsonify([parents_job_json])
+def parent_jobs():
+    # Fetch mother job data
+    mother_job = list(dropoutdb.aggregate([
+        {"$match": {
+            "Dropped_Out": True
+        }},
+        {"$group": {
+            "_id": "$Mother_Job",
+            "count": {"$sum": 1}
+        }}
+    ]))
+    # Fetch father job data
+    father_job = list(dropoutdb.aggregate([
+        {"$match": {
+            "Dropped_Out": True
+        }},
+        {"$group": {
+            "_id": "$Father_Job",
+            "count": {"$sum": 1}
+        }}
+    ]))
+    # Return both datasets as JSON response
+    results = {
+        "mother_job_counts": json.loads(json_util.dumps(mother_job)),
+        "father_job_counts": json.loads(json_util.dumps(father_job))
+    }
+    return jsonify(results)
 
 if __name__ == "__main__":
     app.run()

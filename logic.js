@@ -70,15 +70,79 @@ async function createChart() {
     });
 }
 
-function MotherChart(){
- //javascript code to make mother bar chart
-}
+document.addEventListener('DOMContentLoaded', parentChart);
 
-function FatherChart(){
- //code for father bar
+function parentChart() {
+    fetch("http://127.0.0.1:5000/parent_jobs/")  // Ensure the correct API endpoint
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);  // Log the data for verification
+            
+            let traceMother = {
+                x: data.mother_job_counts.map(item => item._id),
+                y: data.mother_job_counts.map(item => item.count),
+                type: 'bar',
+                name: "Mother's Job",
+                marker: {
+                    color: 'rgba(255, 99, 132, 0.6)',
+                    line: {
+                        color: 'red', 
+                        width: 1 
+                    }
+                }
+            };
+            // Plot Father Job Chart
+            let traceFather = {
+                x: data.father_job_counts.map(item => item._id),
+                y: data.father_job_counts.map(item => item.count),
+                type: 'bar',
+                name: "Father's Job",
+                marker: {
+                    color: 'rgba(144, 238, 144, 0.6)',
+                    line: {
+                        color: 'green', 
+                        width: 1 
+                    }
+                }
+            };
+            // Data arrays for each chart
+            let dataMother = [traceMother];
+            let dataFather = [traceFather];
+            // Layout for Mother Job Chart
+            let layoutMother = {
+                title: "Mother's Job vs Dropout Counts",
+                margin: {l: 100, r: 100, t: 100, b: 100},
+                xaxis: {
+                    title: 'Occupation Type'
+                },
+                yaxis: {
+                    title: 'Dropout Counts'
+                }
+            };
+            // Layout for Father Job Chart
+            let layoutFather = {
+                title: "Father's Job vs Dropout Counts",
+                margin: {l: 100, r: 100, t: 100, b: 100},
+                xaxis: {
+                    title: 'Occupation Type'
+                },
+                yaxis: {
+                    title: 'Dropout Counts'
+                }
+            };
+            // Render the Mother Job Chart
+            Plotly.newPlot('MotherJobChart', dataMother, layoutMother);
+            // Render the Father Job Chart
+            Plotly.newPlot('FatherJobChart', dataFather, layoutFather);
+        })
+        .catch(error => {
+            console.error('Error fetching the data:', error);
+        });
 }
-
 createChart();
-MotherChart();
-FatherChart();
-
+parentChart();
