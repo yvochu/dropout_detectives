@@ -4,75 +4,118 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Parents Together and Drop Outs</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Using a specific version from CDN with defer -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; }
-        .chart-container { width: 600px; height: 400px; margin: 20px auto; }
+        body { 
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .chart-container { 
+            width: 800px; 
+            height: 400px; 
+            margin: 20px auto; 
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        #error-message {
+            color: red;
+            text-align: center;
+            display: none;
+        }
     </style>
 </head>
 <body>
     <h1>Parents Together and Drop Outs</h1>
+    <div id="error-message">Error loading chart. Please refresh the page.</div>
     <div class="chart-container">
         <canvas id="myChart"></canvas>
     </div>
-
     <script>
-        // Your data from Python
-        const data = {
-            'Total Drop Outs': [dropouts],
-            'Total Parents Together': [total_parents_together],
-            'Parents Together Drop Outs': [parents_together_dropouts_total],
-            'Total Parents Apart': [total_parents_apart],
-            'Parents Apart Drop Outs': [parents_apart_dropouts_total]
-        };
-
-        // Create a DataFrame-like structure
-        const df = {
-            'Total Drop Outs': data['Total Drop Outs'][100],
-            'Total Parents Together': data['Total Parents Together'][80],
-            'Parents Together Drop Outs': data['Parents Together Drop Outs'][12],
-            'Total Parents Apart': data['Total Parents Apart'][569],
-            'Parents Apart Drop Outs': data['Parents Apart Drop Outs'][88]
-        };
-
-        // Prepare data for Chart.js
-        const labels = Object.keys(df);
-        const values = Object.values(df);
-
-        const ctx = document.getElementById('myChart').getContext('2d');
-
-        const myChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Drop Outs',
-                    data: values,
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Drop Outs'
+        // Wait for the DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                // Define the data
+                const df = {
+                    'Total Drop Outs': 100,
+                    'Total Parents Together': 80,
+                    'Parents Together Drop Outs': 12,
+                    'Total Parents Apart': 569,
+                    'Parents Apart Drop Outs': 88
+                };
+ 
+                // Prepare data for Chart.js
+                const labels = Object.keys(df);
+                const values = Object.values(df);
+ 
+                const ctx = document.getElementById('myChart').getContext('2d');
+ 
+                // Check if Chart is defined
+                if (typeof Chart === 'undefined') {
+                    throw new Error('Chart.js is not loaded');
+                }
+ 
+                const myChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Count',
+                            data: values,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                                'rgba(54, 162, 235, 0.2)',
+                                'rgba(255, 206, 86, 0.2)',
+                                'rgba(75, 192, 192, 0.2)',
+                                'rgba(153, 102, 255, 0.2)'
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Count'
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    maxRotation: 45,
+                                    minRotation: 45
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            title: {
+                                display: true,
+                                text: 'Parents Together and Drop Outs Analysis',
+                                font: {
+                                    size: 16
+                                }
+                            }
                         }
                     }
-                },
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    title: {
-                        display: true,
-                        text: 'Parents Together and Drop Outs'
-                    }
-                }
+                });
+            } catch (error) {
+                console.error('Error creating chart:', error);
+                document.getElementById('error-message').style.display = 'block';
             }
         });
     </script>
